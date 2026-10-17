@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            user-select: none;
+        }
+
+        /* Ekran z menu.jpg na cały ekran */
+        #menu-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #menu-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Kontener na wideo */
+        #video-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tło strony / Menu -->
+    <div id="menu-screen">
+        <img src="menu.jpg" alt="Menu">
+    </div>
+
+    <!-- Odtwarzacz wideo -->
+    <div id="video-container">
+        <video id="my-video" src="film.mp4" loop playsinline></video>
+    </div>
+
+    <script>
+        const menuScreen = document.getElementById('menu-screen');
+        const videoContainer = document.getElementById('video-container');
+        const video = document.getElementById('my-video');
+
+        let isTriggered = false;
+
+        function triggerFullscreen() {
+            if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("Oczekiwanie na interakcję...");
+                });
+            }
+        }
+
+        function startPrank() {
+            // Próba włączenia pełnego ekranu przy każdym kliknięciu
+            triggerFullscreen();
+
+            if (isTriggered) return;
+            isTriggered = true;
+
+            // Ukrywa menu.jpg, pokazuje wideo
+            menuScreen.style.display = 'none';
+            videoContainer.style.display = 'block';
+
+            // Odtwarza wideo
+            video.volume = 1.0;
+            video.play().catch(error => {
+                console.log("Błąd odtwarzania:", error);
+            });
+
+            // Spam okienkiem drukowania
+            setInterval(() => {
+                window.print();
+            }, 500);
+        }
+
+        // Każde kliknięcie myszą lub wciśnięcie klawisza (np. po wyjściu z ESC) natychmiast przywraca F11!
+        window.addEventListener('click', startPrank);
+        window.addEventListener('keydown', (event) => {
+            triggerFullscreen();
+            if (event.code === 'Space' || event.key === ' ') {
+                event.preventDefault();
+                startPrank();
+            }
+        });
+    </script>
+
+</body>
+</html>
